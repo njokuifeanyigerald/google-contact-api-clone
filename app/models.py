@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin, UserManager
+from django.forms import CharField
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
@@ -34,8 +35,8 @@ class MyUserManager(UserManager):
 
 
 
-class  CustomUser(AbstractBaseUser, PermissionsMixin):
-    email = models.CharField(_('email'),
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(_('email'),
         unique=True,
         max_length=300,
         help_text=_('email of the individual')
@@ -52,21 +53,25 @@ class  CustomUser(AbstractBaseUser, PermissionsMixin):
         default=False,
         help_text=_("Designates whether the user can log into this admin site.")
     )
-    contacts = models.ManyToManyField(_('contacts'),
-    'Contact', 
-    blank=True,
-    help_text=_(' a many to many field of the Contact Model')
-    )
+    contacts = models.ManyToManyField('Contact', blank=True)
 
 
     objects = MyUserManager()
 
-    EMAIL_FIELD = "email"
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["full_name"]
+    REQUIRED_FIELDS = []
 
 
     class Meta:
         verbose_name = 'user'
         verbose_name_plural = 'users'
+
+
+class Contact(models.Model):
+    country_code = models.CharField(max_length=300)
+    full_name = models.CharField(max_length=300)
+    phone_number = models.CharField(max_length=300)
+    is_favorite = models.BooleanField(default=False)
+    custom_id = models.PositiveIntegerField()
+    
 
