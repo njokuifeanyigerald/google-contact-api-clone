@@ -62,10 +62,10 @@ class ContactAPI(APIView):
 
 
 
-class ContactAPIUpdate(APIView):
+class ContactAPIUpdateDelete(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, format=None, *args, **kwargs):
+    def put(self, request, format=None, *args, **kwargs):
         data = request.data
         user= request.user
 
@@ -129,4 +129,18 @@ class ContactAPIUpdate(APIView):
             return HttpResponseBadRequest()
 
 
-class 
+class ContactSearchAPI(APIView):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        full_name = kwargs['full_name']
+        contacts = list(user.contacts.filter(full_name__contains=full_name).values())
+        if not contacts:
+            return HttpResponseBadRequest({'error: this contact does not exist'})
+
+        context = {
+            'search_matches':contacts,
+            'search_length': len(contacts)
+        }
+
+        return JsonResponse(context, status=200)
+

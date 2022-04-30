@@ -11,6 +11,10 @@ pillow = "*"
 psycopg2 = "*"
 psycopg2-binary = "*"
 python-environ = "*"
+gunicorn = "*"
+django-heroku = "*"
+dj-database-url = "*"
+whitenoise = "*"
 
 [dev-packages]
 
